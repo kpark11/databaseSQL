@@ -13,7 +13,7 @@ import pandas as pd
 from sqlalchemy import create_engine
 
 # Loading the environment variables
-load_dotenv('.env')
+load_dotenv('.env',override=True)
 
 # =============================================================================
 # Connect and get the data from the local database, which is in the format of MySQL, which we can
