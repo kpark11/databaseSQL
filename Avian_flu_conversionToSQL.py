@@ -50,7 +50,7 @@ pg_conn = create_engine(postgreSQL_url)
 # Convert the dataframe to sql.
 
 try:
-    df.to_sql(name='avian_flu', con=pg_conn, chunksize=5000, index=False, index_label=False, if_exists='replace')   
+    df.to_sql(name='avian_flu', con=pg_conn, chunksize=5000, index=True, index_label='id', if_exists='replace')   
     print('*'*30)
     print('Successfully Migrated!')
     print('*'*30)
@@ -65,6 +65,29 @@ except ValueError:
 pg_conn = psycopg2.connect(host=os.getenv("host"), dbname=os.getenv("dbname"), user=os.getenv("user"),
                             password=os.getenv("password"), port=os.getenv("port"))
 pg_cur = pg_conn.cursor()
+
+pg_cur.execute("SELECT column_name, data_type FROM information_schema.columns WHERE table_name = 'avian_flu'")
+
+for result in pg_cur.fetchall():
+    print('result:\n', result)
+print('\n')
+pg_cur.execute(
+    """
+    alter table avian_flu 
+    add primary key (id);
+    """
+    )
+
+pg_conn.commit()
+
+#print(pg_cur.fetchall())
+
+pg_cur.execute("SELECT column_name, data_type FROM information_schema.columns WHERE table_name = 'avian_flu'")
+
+for result in pg_cur.fetchall():
+    print('result:\n', result)
+print('\n')
+               
 pg_cur.execute(
     """
     SELECT * FROM avian_flu
@@ -72,7 +95,9 @@ pg_cur.execute(
     """
     )
 
-print(pg_cur.fetchall())
+for result in pg_cur.fetchall():
+    print('result:\n', result)
+print('\n')
 
 
 # =============================================================================
