@@ -16,8 +16,16 @@ load_dotenv('.env',override=True)
 
 # =============================================================================
 # Read the csv file from the local storage from https://www.cdc.gov/bird-flu/situation-summary/index.html
-csv_file = r'C:\Users\brian\Downloads\commercial-backyard-flocks.csv'
-df = pd.read_csv(csv_file)
+try:
+    csv_file = r'https://www.cdc.gov/bird-flu/modules/situation-summary/commercial-backyard-flocks.csv'
+    df = pd.read_csv(csv_file)
+    file_path = os.path.join(os.getcwd(), 'Avianflu_data')
+    i = len(os.listdir(file_path))
+    df.to_csv(f'Avianflu_data/commercial-backyard-flocks-{i}.csv')
+except Exception as e:
+    df = pd.read_csv(r'C:\Users\brian\OneDrive - University of Tennessee\Desktop\Research\Python program\SQL\Avianflu_data\commercial-backyard-flocks.csv')
+    print (e)
+    
 
 print('Columns:\n', df.columns)
 print('\n')
